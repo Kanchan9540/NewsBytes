@@ -1,6 +1,6 @@
-const API_KEY = "70ebde5450e7497693b3655ea69f4318";
-const url = "https://newsapi.org/v2/everything?q=";
-
+// const API_KEY = "1d3a0eefa97b499d8fbc4ee93eeb40b7";
+// const url = "https://newsapi.org/v2/everything?q=";
+const url = "https://newsdata.io/api/1/news?apikey=pub_2501573d5a66fa29132ca8fa301fb38bbf7cc&q=";
 
 
 window.addEventListener("load", () => fetchNews("India"));
@@ -10,10 +10,11 @@ function reload() {
 }
 
 async function fetchNews(query) {
-    const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
+    //const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
+    const res = await fetch(`${url}${query}`);
     const data = await res.json();
     //console.log(data);
-    bindData(data.articles);
+    bindData(data.results);
 }
 
 function bindData(articles) {
@@ -23,7 +24,7 @@ function bindData(articles) {
     cardsContainer.innerHTML = "";
 
     articles.forEach((article) => {
-        if (!article.urlToImage) return;
+        if (!article.image_url) return;
         const cardClone = newsCardTemplate.content.cloneNode(true);
         fillDataInCard(cardClone, article);
         cardsContainer.appendChild(cardClone);
@@ -36,15 +37,15 @@ function fillDataInCard(cardClone, article) {
     const newsSource = cardClone.querySelector("#news-source");
     const newsDesc = cardClone.querySelector("#news-desc");
 
-    newsImg.src = article.urlToImage;
+    newsImg.src = article.image_url;
     newsTitle.innerHTML = article.title;
     newsDesc.innerHTML = article.description;
 
-    const date = new Date(article.publishedAt).toLocaleString("en-US", {
+    const date = new Date(article.pubDate).toLocaleString("en-US", {
         timeZone: "Asia/Jakarta",
     });
 
-    newsSource.innerHTML = `${article.source.name} · ${date}`;
+    newsSource.innerHTML = `${article.source_id} · ${date}`;
 
     cardClone.firstElementChild.addEventListener("click", () => {
         window.open(article.url, "_blank");
